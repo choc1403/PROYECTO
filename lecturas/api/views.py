@@ -1,5 +1,6 @@
 # API
 from rest_framework import viewsets
+from rest_framework import status
 
 # MODELOS
 from lecturas.models import Producto, Venta, DetalleVenta
@@ -21,13 +22,37 @@ class DetalleVentaViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def ultima_venta(request):
-    venta = Venta.objects.order_by('-fecha_hora').first()
+    venta = Venta.objects.order_by('-fecha_hora').exclude(servido = True).first()
 
     if not venta:
         return Response({"mensaje": "No hay ventas registradas"}, status=404)
 
     serializer = VentaSerializer(venta)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def marcar_ultima_venta_servida(request):
+    venta = Venta.objects.order_by('-fecha_hora').first()
+
+    if not venta:
+        return Response(
+            {"mensaje": "No hay ventas registradas"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if venta.servido:
+        return Response(
+            {"mensaje": "La última venta ya está marcada como servida"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    venta.servido = True
+    venta.save()
+
+    return Response({
+        "mensaje": "Venta marcada como servida",
+        "venta_id": venta.id
+    })
 
 @api_view(['POST'])
 def crear_venta(request):

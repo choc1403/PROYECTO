@@ -40,7 +40,7 @@ class VentaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Venta
-        fields = ['id', 'fecha_hora', 'detalles']
+        fields = ['id', 'fecha_hora', 'servido','detalles']
 
    
  

@@ -11,6 +11,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/crear_venta/', views.crear_venta, name='crear_venta'),
     path('api/ultima_venta/', views.ultima_venta, name='ultima_venta'),
+    path('api/marcar_ultima_venta_servida/', views.marcar_ultima_venta_servida, name='marcar_ultima_venta_servida')
     
    
 ]

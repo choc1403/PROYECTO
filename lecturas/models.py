@@ -11,6 +11,7 @@ class Producto(models.Model):
 
 class Venta(models.Model):
     fecha_hora = models.DateTimeField(auto_now_add=True)
+    servido = models.BooleanField(default=False)
 
     
 
