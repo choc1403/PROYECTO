@@ -3,21 +3,21 @@ from rest_framework import serializers
 
 
 # MODELOS
-from lecturas.models import Producto, DetalleVenta, Venta
+from lecturas.models import ProductoServido, DetalleVenta, Venta
 
 
 
 
 
 
-class ProductooSerializer(serializers.ModelSerializer):
+class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Producto
+        model = ProductoServido
         fields = '__all__'
 
 
 
-
+"""
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
@@ -41,6 +41,6 @@ class VentaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Venta
         fields = ['id', 'fecha_hora', 'servido','detalles']
-
+"""
    
  

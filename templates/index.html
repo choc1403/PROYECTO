@@ -3,821 +3,263 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Punto de Venta</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <title>Productos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <meta http-equiv='refresh' content='8'>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --white: #ffffff;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --gray-900: #111827;
-      --blue-50: #eff6ff;
-      --blue-100: #dbeafe;
-      --blue-500: #3b82f6;
-      --blue-600: #2563eb;
-      --blue-700: #1d4ed8;
-      --red-50: #fef2f2;
-      --red-400: #f87171;
-      --red-500: #ef4444;
-      --green-50: #f0fdf4;
-      --green-500: #22c55e;
-      --green-600: #16a34a;
-      --amber-50: #fffbeb;
-      --amber-500: #f59e0b;
-      --radius-sm: 6px;
-      --radius: 10px;
-      --radius-lg: 14px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    }
-
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--gray-50);
-      color: var(--gray-900);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* NAV */
-    nav {
-      background: var(--white);
-      border-bottom: 1px solid var(--gray-200);
-      padding: 0 2rem;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .nav-brand {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--gray-900);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .nav-brand svg { color: var(--blue-500); }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .api-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--gray-500);
-    }
-
-    .api-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--gray-300);
-      transition: background 0.3s;
-    }
-
-    .api-dot.online  { background: var(--green-500); }
-    .api-dot.offline { background: var(--red-400); }
-
-    /* LAYOUT */
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
+      font-family: system-ui, sans-serif;
+      background: #fafafa;
+      color: #111;
       padding: 2rem;
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 1.5rem;
-      align-items: start;
+      max-width: 760px;
+      margin: 0 auto;
     }
 
-    /* PANEL */
-    .panel {
-      background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-    }
-
-    .panel-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--gray-100);
+    .toolbar {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      gap: .6rem;
+      margin-bottom: 1.5rem;
     }
 
-    .panel-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gray-700);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .panel-title svg { color: var(--gray-400); }
-
-    .panel-body { padding: 1.25rem; }
-
-    /* SEARCH */
-    .search-wrap {
-      position: relative;
-      margin-bottom: 1.25rem;
-    }
-
-    .search-wrap svg {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray-400);
-      pointer-events: none;
-    }
-
-    .search-wrap input {
-      width: 100%;
-      padding: 8px 12px 8px 34px;
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-family: inherit;
-      color: var(--gray-900);
-      background: var(--gray-50);
+    input[type="text"] {
+      flex: 1;
+      padding: .5rem .75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: .9rem;
+      background: #fff;
       outline: none;
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { border-color: #888; }
+
+    button {
+      padding: .5rem .9rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    button:hover  { background: #f0f0f0; }
+    button:active { background: #e8e8e8; }
+
+    .chart-wrap {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 1.25rem 1.25rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-label {
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #aaa;
+      margin-bottom: .75rem;
     }
 
-    .search-wrap input:focus {
-      border-color: var(--blue-500);
-      background: var(--white);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-    }
-
-    /* PRODUCT TABLE */
-    .product-table {
+    table {
       width: 100%;
       border-collapse: collapse;
+      font-size: .88rem;
     }
-
-    .product-table thead tr {
-      background: var(--gray-50);
-    }
-
-    .product-table th {
-      padding: 8px 12px;
+    thead th {
       text-align: left;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
+      padding: .5rem .75rem;
+      border-bottom: 1.5px solid #e0e0e0;
+      font-size: .75rem;
       text-transform: uppercase;
-      color: var(--gray-400);
-      border-bottom: 1px solid var(--gray-200);
-    }
-
-    .product-table th:last-child { text-align: right; }
-
-    .product-table tbody tr {
-      border-bottom: 1px solid var(--gray-100);
-      transition: background 0.1s;
-    }
-
-    .product-table tbody tr:last-child { border-bottom: none; }
-
-    .product-table tbody tr:hover:not(.row-disabled) {
-      background: var(--gray-50);
-    }
-
-    .product-table tbody tr.row-disabled {
-      opacity: 0.5;
-    }
-
-    .product-table td {
-      padding: 11px 12px;
-      vertical-align: middle;
-    }
-
-    .product-table td:last-child { text-align: right; }
-
-    .product-name-cell {
-      font-weight: 500;
-      color: var(--gray-900);
-      font-size: 13px;
-    }
-
-    .product-id-cell {
-      font-size: 12px;
-      color: var(--gray-400);
-      font-weight: 400;
-    }
-
-    /* STOCK BADGE */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .badge-green  { background: var(--green-50);  color: var(--green-600); }
-    .badge-amber  { background: var(--amber-50);  color: var(--amber-500); }
-    .badge-red    { background: var(--red-50);    color: var(--red-500);   }
-
-    /* ADD BUTTON */
-    .btn-add {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--gray-200);
-      background: var(--white);
-      color: var(--gray-700);
-      font-size: 12px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .btn-add:hover:not(:disabled) {
-      border-color: var(--blue-500);
-      color: var(--blue-600);
-      background: var(--blue-50);
-    }
-
-    .btn-add:active:not(:disabled) { transform: scale(0.97); }
-
-    .btn-add:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .btn-add svg { flex-shrink: 0; }
-
-    /* Skeleton rows */
-    .skeleton-row td { padding: 13px 12px; }
-
-    .skeleton-cell {
-      height: 12px;
-      border-radius: 4px;
-      background: var(--gray-200);
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
-    }
-
-    /* CART */
-    .cart-empty {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--gray-400);
-    }
-
-    .cart-empty svg { margin: 0 auto 0.75rem; display: block; }
-    .cart-empty p { font-size: 13px; }
-
-    .cart-list { display: flex; flex-direction: column; gap: 1px; }
-
-    .cart-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 0;
-      border-bottom: 1px solid var(--gray-100);
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .cart-row:last-child { border-bottom: none; }
-
-    .cart-row-name {
-      flex: 1;
-      font-size: 13px;
+      letter-spacing: .06em;
+      color: #888;
       font-weight: 500;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
+    tbody tr { border-bottom: 1px solid #f0f0f0; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f9f9f9; }
+    td { padding: .6rem .75rem; }
 
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .qty-btn {
-      width: 24px; height: 24px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--gray-200);
-      background: var(--white);
-      color: var(--gray-500);
-      font-size: 14px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.1s;
-      line-height: 1;
-    }
-
-    .qty-btn:hover { border-color: var(--gray-300); background: var(--gray-50); color: var(--gray-900); }
-
-    .qty-num {
-      width: 24px;
-      text-align: center;
-      font-size: 13px;
+    .stock {
+      display: inline-block;
+      padding: .15rem .55rem;
+      border-radius: 99px;
+      font-size: .78rem;
       font-weight: 500;
-      color: var(--gray-700);
     }
+    .ok  { background: #e8f5e9; color: #2e7d32; }
+    .low { background: #fff8e1; color: #f57f17; }
+    .out { background: #fce4ec; color: #b71c1c; }
 
-    .cart-remove {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--gray-300);
-      display: flex; align-items: center;
-      padding: 2px;
-      border-radius: 4px;
-      transition: color 0.1s;
-    }
-
-    .cart-remove:hover { color: var(--red-400); }
-
-    /* SUMMARY */
-    .cart-summary {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--gray-200);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      color: var(--gray-500);
-      margin-bottom: 6px;
-    }
-
-    .summary-row.total {
-      color: var(--gray-900);
-      font-weight: 600;
-      font-size: 14px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--gray-200);
-      margin-bottom: 0;
-    }
-
-    /* BUTTONS */
-    .btn {
-      width: 100%;
-      padding: 9px 16px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      border: none;
-      transition: all 0.15s;
-    }
-
-    .btn-primary {
-      background: var(--gray-900);
-      color: var(--white);
-      margin-top: 1rem;
-    }
-
-    .btn-primary:hover:not(:disabled) { background: var(--gray-700); }
-    .btn-primary:active:not(:disabled) { transform: scale(0.99); }
-    .btn-primary:disabled {
-      background: var(--gray-200);
-      color: var(--gray-400);
-      cursor: not-allowed;
-    }
-
-    .btn-ghost {
-      background: none;
-      color: var(--gray-400);
-      border: 1px solid var(--gray-200);
-      margin-top: 6px;
-    }
-
-    .btn-ghost:hover:not(:disabled) {
-      color: var(--red-500);
-      border-color: var(--red-400);
-      background: var(--red-50);
-    }
-
-    /* TOAST */
-    #toasts {
-      position: fixed;
-      top: 68px;
-      right: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 999;
-      pointer-events: none;
-    }
-
-    .toast {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      min-width: 280px;
-      max-width: 340px;
-      box-shadow: var(--shadow);
-      pointer-events: auto;
-      animation: toastIn 0.25s ease;
-    }
-
-    .toast-icon {
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .toast.success .toast-icon { background: var(--green-50); color: var(--green-500); }
-    .toast.error   .toast-icon { background: var(--red-50);   color: var(--red-500);   }
-    .toast.warning .toast-icon { background: var(--amber-50); color: var(--amber-500); }
-
-    .toast-text { font-size: 13px; color: var(--gray-700); line-height: 1.4; }
-
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateX(10px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* EMPTY STATE */
-    .table-empty {
-      padding: 2.5rem;
-      text-align: center;
-      color: var(--gray-400);
-      font-size: 13px;
-    }
-
-    @media (max-width: 768px) {
-      .page {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-      }
-    }
+    .empty { text-align: center; padding: 2.5rem; color: #bbb; font-size: .88rem; }
+    .muted { color: #999; font-size: .82rem; }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-brand">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      Punto de venta
-    </div>
-    <div class="nav-right">
-      <div class="api-status">
-        <div class="api-dot" id="api-dot"></div>
-        <span id="api-label">Conectando...</span>
-      </div>
-    </div>
-  </nav>
+<div class="toolbar">
+  <input id="q" type="text" placeholder="Buscar producto…" oninput="render()"/>
+  <button onclick="load()">↻ Actualizar</button>
+</div>
 
-  <div id="toasts"></div>
+<div class="chart-wrap">
+  <div class="chart-label">Stock por producto</div>
+  <canvas id="chart" height="100"></canvas>
+</div>
 
-  <div class="page">
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Stock</th>
+      <th>Fecha / Hora</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
 
-    <!-- PRODUCTOS -->
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 00-4 0v2"/></svg>
-          Productos
-          <span id="prod-count" style="font-weight:400; color:var(--gray-400);"></span>
-        </div>
-      </div>
-      <div class="panel-body">
-        <div class="search-wrap">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="search" placeholder="Buscar producto..." oninput="filtrarProductos()"/>
-        </div>
-        <table class="product-table">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Stock</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody id="product-tbody">
-            <!-- Skeletons -->
-            
-              <tr class="skeleton-row">
-                <td><div class="skeleton-cell" style="width:120px"></div></td>
-                <td><div class="skeleton-cell" style="width:60px"></div></td>
-                <td style="text-align:right"><div class="skeleton-cell" style="width:80px; margin-left:auto"></div></td>
-              </tr>
-            
-          </tbody>
-        </table>
-      </div>
-    </div>
+<script>
+  // Obtener el protocolo (HTTP/HTTPS)
+  const protocolo = window.location.protocol; // Ejemplo: "https:"
 
-    <!-- CARRITO -->
-    <div class="panel" style="position:sticky;top:72px;">
-      <div class="panel-header">
-        <div class="panel-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.99-1.83l1.54-8.57H6"/></svg>
-          Carrito
-        </div>
-        <span id="cart-badge" style="font-size:11px;font-weight:600;background:var(--gray-100);color:var(--gray-500);padding:2px 8px;border-radius:999px;">0 ítems</span>
-      </div>
-      <div class="panel-body">
+  // Obtener el dominio (hostname)
+  const dominio = window.location.hostname; // Ejemplo: "example.com"
 
-        <div id="cart-empty" class="cart-empty">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--gray-300)"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 001.99-1.83l1.54-8.57H6"/></svg>
-          <p>Agrega productos para comenzar</p>
-        </div>
+  // Obtener el puerto
+  const puerto = window.location.port; // Ejemplo: "8080" o "" si no está explícito
+  const baseUrl = `${protocolo}//${dominio}${puerto ? `:${puerto}` : ''}`;
+  
+  const API =  `${baseUrl}/lecturas/api/producto/`;
+  let data  = [];
+  let chart = null;
 
-        <div id="cart-list" class="cart-list" style="display:none"></div>
+  async function load() {
+    document.getElementById('tbody').innerHTML =
+      '<tr><td colspan="3" class="empty">Cargando…</td></tr>';
+    try {
+      const res  = await fetch(API);
+      const json = await res.json();
+      data = Array.isArray(json) ? json : (json.results ?? []);
+      render();
+    } catch {
+      document.getElementById('tbody').innerHTML =
+        '<tr><td colspan="3" class="empty">No se pudo conectar con la API.</td></tr>';
+    }
+  }
 
-        <div id="cart-summary" class="cart-summary" style="display:none">
-          <div class="summary-row">
-            <span>Productos</span>
-            <span id="sum-products">0</span>
-          </div>
-          <div class="summary-row">
-            <span>Unidades</span>
-            <span id="sum-units">0</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total ítems</span>
-            <span id="sum-total">0</span>
-          </div>
-        </div>
+  function render() {
+    const q    = document.getElementById('q').value.toLowerCase();
+    const rows = data.filter(p => (p.nombre ?? '').toLowerCase().includes(q));
+    updateChart(rows);
 
-        <button class="btn btn-primary" id="btn-confirm" disabled onclick="confirmarVenta()">
-          Confirmar venta
-        </button>
-        <button class="btn btn-ghost" onclick="limpiarCarrito()">
-          Vaciar carrito
-        </button>
-
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    const API_PRODUCTOS = 'http://127.0.0.1:8000/lecturas/api/producto/';
-    const API_VENTA     = 'http://127.0.0.1:8000/lecturas/api/crear_venta/';
-
-    let productos = [];
-    let carrito   = {}; // { id: { nombre, cantidad, stock } }
-    let filtro    = '';
-
-    // ── TOAST ──────────────────────────────────────────
-    function toast(msg, type = 'success') {
-      const icons = {
-        success: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
-        error:   `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-        warning: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
-      };
-      const el = document.createElement('div');
-      el.className = `toast ${type}`;
-      el.innerHTML = `<div class="toast-icon">${icons[type]}</div><div class="toast-text">${msg}</div>`;
-      document.getElementById('toasts').appendChild(el);
-      setTimeout(() => el.remove(), 3500);
+    if (!rows.length) {
+      document.getElementById('tbody').innerHTML =
+        '<tr><td colspan="3" class="empty">Sin resultados.</td></tr>';
+      return;
     }
 
-    // ── CARGAR ─────────────────────────────────────────
-    async function cargarProductos() {
-      const dot   = document.getElementById('api-dot');
-      const label = document.getElementById('api-label');
-      try {
-        const res = await axios.get(API_PRODUCTOS);
-        productos = res.data;
-        dot.className   = 'api-dot online';
-        label.textContent = `${productos.length} productos`;
-        document.getElementById('prod-count').textContent = `· ${productos.length}`;
-        renderTabla();
-      } catch {
-        dot.className   = 'api-dot offline';
-        label.textContent = 'Sin conexión';
-        document.getElementById('product-tbody').innerHTML =
-          `<tr><td colspan="3" class="table-empty">No se pudo conectar con la API</td></tr>`;
-        toast('Error al conectar con el servidor', 'error');
+    document.getElementById('tbody').innerHTML = rows.map(p => {
+      const cls   = p.stock <= 0 ? 'out' : p.stock <= 5 ? 'low' : 'ok';
+      const fecha = p.fecha_hora
+        ? new Date(p.fecha_hora).toLocaleString('es-GT', { dateStyle:'short', timeStyle:'short' })
+        : '—';
+      return `<tr>
+        <td>${esc(p.nombre)}</td>
+        <td><span class="stock ${cls}">${p.stock ?? 0}</span></td>
+        <td class="muted">${fecha}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function updateChart(rows) {
+    const sorted = [...rows].sort((a, b) =>
+      new Date(a.fecha_hora) - new Date(b.fecha_hora)
+    );
+
+    // Eje X: nombre del producto + fecha corta
+    const labels = sorted.map(p => {
+      const fecha = p.fecha_hora
+        ? new Date(p.fecha_hora).toLocaleDateString('es-GT', { dateStyle: 'short' })
+        : '';
+      return [p.nombre ?? '—', fecha];
+    });
+    const values = sorted.map(p => p.stock ?? 0);
+
+    if (chart) {
+      chart.data.labels           = labels;
+      chart.data.datasets[0].data = values;
+      chart.update();
+      return;
+    }
+
+    chart = new Chart(document.getElementById('chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Stock',
+          data: values,
+          borderColor: '#111',
+          borderWidth: 1.5,
+          pointBackgroundColor: '#111',
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: true,
+          backgroundColor: 'rgba(0,0,0,.04)',
+          tension: .35
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              // tooltip: nombre completo + fecha + stock
+              title: ctx => {
+                const p = sorted[ctx[0].dataIndex];
+                return p ? (p.nombre ?? '—') : '';
+              },
+              label: ctx => {
+                const p = sorted[ctx.dataIndex];
+                const fecha = p?.fecha_hora
+                  ? new Date(p.fecha_hora).toLocaleString('es-GT', { dateStyle:'short', timeStyle:'short' })
+                  : '—';
+                return [` Stock: ${ctx.parsed.y}`, ` Fecha: ${fecha}`];
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: '#aaa',
+              font: { size: 11 },
+              maxRotation: 30,
+              // Chart.js renderiza arrays como líneas múltiples automáticamente
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#f0f0f0' },
+            ticks: { color: '#aaa', font: { size: 11 }, precision: 0 }
+          }
+        }
       }
-    }
+    });
+  }
 
-    // ── RENDER TABLA ───────────────────────────────────
-    function renderTabla() {
-      const tbody = document.getElementById('product-tbody');
-      const q = filtro.toLowerCase();
-      const lista = q
-        ? productos.filter(p => p.nombre.toLowerCase().includes(q))
-        : productos;
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
-      if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="table-empty">Sin resultados</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = lista.map(p => {
-        const enCarrito = carrito[p.id]?.cantidad || 0;
-        const stockDisp = p.stock - enCarrito;
-        const sinStock  = p.stock <= 0;
-
-        let badgeClass = 'badge-green';
-        let stockLabel = `${p.stock} en stock`;
-        if (sinStock)       { badgeClass = 'badge-red';   stockLabel = 'Sin stock'; }
-        else if (p.stock <= 3) { badgeClass = 'badge-amber'; }
-
-        return `
-          <tr class="${sinStock ? 'row-disabled' : ''}">
-            <td>
-              <div class="product-name-cell">${p.nombre}</div>
-              <div class="product-id-cell">#${p.id}</div>
-            </td>
-            <td>
-              <span class="badge ${badgeClass}">${stockLabel}</span>
-              ${enCarrito > 0 ? `<span style="font-size:11px;color:var(--gray-400);margin-left:4px;">${enCarrito} en carrito</span>` : ''}
-            </td>
-            <td>
-              <button class="btn-add" onclick="agregar(${p.id})" ${stockDisp <= 0 ? 'disabled' : ''}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Agregar
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function filtrarProductos() {
-      filtro = document.getElementById('search').value;
-      renderTabla();
-    }
-
-    // ── AGREGAR ────────────────────────────────────────
-    function agregar(id) {
-      const prod = productos.find(p => p.id === id);
-      if (!prod) return;
-
-      const enCarrito = carrito[id]?.cantidad || 0;
-      if (enCarrito >= prod.stock) {
-        toast(`Stock insuficiente para "${prod.nombre}"`, 'warning');
-        return;
-      }
-
-      if (carrito[id]) {
-        carrito[id].cantidad += 1;
-      } else {
-        carrito[id] = { nombre: prod.nombre, cantidad: 1, stock: prod.stock };
-      }
-
-      renderTabla();
-      renderCarrito();
-    }
-
-    function cambiarQty(id, delta) {
-      if (!carrito[id]) return;
-      const newQty = carrito[id].cantidad + delta;
-      if (newQty <= 0) {
-        delete carrito[id];
-      } else if (newQty > carrito[id].stock) {
-        toast('Sin stock disponible', 'warning');
-        return;
-      } else {
-        carrito[id].cantidad = newQty;
-      }
-      renderTabla();
-      renderCarrito();
-    }
-
-    function eliminar(id) {
-      delete carrito[id];
-      renderTabla();
-      renderCarrito();
-    }
-
-    function limpiarCarrito() {
-      carrito = {};
-      renderTabla();
-      renderCarrito();
-    }
-
-    // ── RENDER CARRITO ─────────────────────────────────
-    function renderCarrito() {
-      const keys    = Object.keys(carrito);
-      const total   = keys.reduce((s, id) => s + carrito[id].cantidad, 0);
-      const badge   = document.getElementById('cart-badge');
-      const empty   = document.getElementById('cart-empty');
-      const list    = document.getElementById('cart-list');
-      const summary = document.getElementById('cart-summary');
-      const confirm = document.getElementById('btn-confirm');
-
-      badge.textContent = `${total} ítem${total !== 1 ? 's' : ''}`;
-
-      if (keys.length === 0) {
-        empty.style.display = 'block';
-        list.style.display  = 'none';
-        summary.style.display = 'none';
-        confirm.disabled = true;
-        return;
-      }
-
-      empty.style.display   = 'none';
-      list.style.display    = 'flex';
-      summary.style.display = 'block';
-      confirm.disabled      = false;
-
-      list.innerHTML = keys.map(id => {
-        const item = carrito[id];
-        return `
-          <div class="cart-row">
-            <span class="cart-row-name" title="${item.nombre}">${item.nombre}</span>
-            <div class="qty-controls">
-              <button class="qty-btn" onclick="cambiarQty(${id}, -1)">−</button>
-              <span class="qty-num">${item.cantidad}</span>
-              <button class="qty-btn" onclick="cambiarQty(${id}, +1)">+</button>
-            </div>
-            <button class="cart-remove" onclick="eliminar(${id})" title="Eliminar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            </button>
-          </div>
-        `;
-      }).join('');
-
-      document.getElementById('sum-products').textContent = keys.length;
-      document.getElementById('sum-units').textContent    = total;
-      document.getElementById('sum-total').textContent    = `${total} u.`;
-    }
-
-    // ── VENTA ──────────────────────────────────────────
-    async function confirmarVenta() {
-      const btn = document.getElementById('btn-confirm');
-      const keys = Object.keys(carrito);
-      if (keys.length === 0) return;
-
-      const payload = keys.map(id => ({
-        producto_id: parseInt(id),
-        cantidad: carrito[id].cantidad
-      }));
-
-      btn.disabled      = true;
-      btn.textContent   = 'Procesando...';
-
-      try {
-        await axios.post(API_VENTA, payload);
-        toast('Venta realizada exitosamente', 'success');
-        carrito = {};
-        await cargarProductos();
-        renderCarrito();
-      } catch (err) {
-        const msg = err.response?.data?.detail
-          || err.response?.data?.error
-          || (typeof err.response?.data === 'string' ? err.response.data : null)
-          || 'Error al procesar la venta';
-        toast(msg, 'error');
-      } finally {
-        btn.disabled    = false;
-        btn.textContent = 'Confirmar venta';
-      }
-    }
-
-    cargarProductos();
-  </script>
+  load();
+</script>
 </body>
 </html>

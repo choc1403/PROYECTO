@@ -3,19 +3,19 @@ from rest_framework import viewsets
 from rest_framework import status
 
 # MODELOS
-from lecturas.models import Producto, Venta, DetalleVenta
+from lecturas.models import ProductoServido, Venta, DetalleVenta
 
 # SERIALIZAERS
-from .serializer import ProductooSerializer, DetalleVenta, VentaSerializer
+from .serializer import ProductoSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-class ProductoViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductooSerializer
-    queryset = Producto.objects.all().order_by('-id')
+class ProductoServidoViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductoSerializer
+    queryset = ProductoServido.objects.all().order_by('-id')
 
-
+"""
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     serializer_class = VentaSerializer
     queryset = DetalleVenta.objects.all().order_by('-id')
@@ -83,4 +83,6 @@ def crear_venta(request):
         "mensaje": "Venta realizada",
         "venta_id": venta.id
         
-    })
+    })"""
+
+
