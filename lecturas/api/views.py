@@ -15,6 +15,34 @@ class ProductoServidoViewSet(viewsets.ModelViewSet):
     serializer_class = ProductoSerializer
     queryset = ProductoServido.objects.all().order_by('-id')
 
+@api_view(['POST'])
+def recibir_lectura_esp8266(request):
+    # Extraemos los datos del JSON enviado por el ESP8266
+    nombre_recibido = request.data.get('nombre')
+    stock_recibido = request.data.get('stock', 1)
+
+    if not nombre_recibido:
+        return Response({"error": "Falta el nombre del producto"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 1. Guardamos el registro de que el producto fue servido
+    nuevo_servicio = ProductoServido.objects.create(
+        nombre=nombre_recibido,
+        stock=stock_recibido
+    )
+
+    # 2. Opcional: Lógica para marcar la última venta como servida automáticamente
+    # Si quieres que al recibir el post del ESP también se actualice la venta:
+    ultima_venta = Venta.objects.order_by('-fecha_hora').first()
+    if ultima_venta and not ultima_venta.servido:
+        ultima_venta.servido = True
+        ultima_venta.save()
+
+    return Response({
+        "mensaje": "Lectura recibida correctamente",
+        "producto": nombre_recibido,
+        "id_registro": nuevo_servicio.id
+    }, status=status.HTTP_201_CREATED)
+
 """
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     serializer_class = VentaSerializer
